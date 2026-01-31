@@ -42,4 +42,4 @@ Incidentally, the method for transmitting the LineCoding information inserted vi
 
 ## Licence
 
-[MIT](https://github.com/kotabrog/ft_mini_ls/blob/main/LICENSE)
+[MIT](https://github.com/mukyokyo/Pico-WiFi-Serial-Bridge/blob/main/LICENSE.txt)
