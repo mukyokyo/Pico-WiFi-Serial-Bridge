@@ -162,7 +162,7 @@ bool PUSR_portconfig_check(uint8_t *p) {
           if (prevconf != config || prevbaud != baud) {
             uart1dma.flush();
             uart1dma.begin(baud, config);
-            Serial.printf("Update UART to %ubps %s\n", uart1dma.getActualBaud(), tmp);
+            Serial.printf("Update UART to %ubps %s\r\n", uart1dma.getActualBaud(), tmp);
             current_baud = baud;
             current_serconfig = s;
             prevconf = config;
@@ -246,13 +246,13 @@ void LSRMSTINS_portconfig_check(uint8_t *pBuf, int len) {
                 subState++;
               } else {
                 baud = max(min((long)*(uint32_t *)baud_byte, _MAX_BAUDRATE), _MIN_BAUDRATE);
-                Serial.printf("BaudRate=%lu\n", baud);
+                Serial.printf("BaudRate=%lu\r\n", baud);
                 if (baud != prevbaud) {
                   uart1dma.write(mybuf, mylen);
                   mylen = 0;
                   uart1dma.flush();
                   uart1dma.begin(baud, prevconf);
-                  Serial.printf("Update UART to *%ubps %s\n", uart1dma.getActualBaud(), s.c_str());
+                  Serial.printf("Update UART to *%ubps %s\r\n", uart1dma.getActualBaud(), s.c_str());
                   current_baud = baud;
                   prevbaud = baud;
                 }
@@ -272,7 +272,7 @@ void LSRMSTINS_portconfig_check(uint8_t *pBuf, int len) {
               subState++;
             } else if (subState == 3) {
               _stopBits = ch & 0xFF;
-              Serial.printf("ByteSize=%d Parity=%d StopBits=%d\n", _byteSize, _parity, _stopBits);
+              Serial.printf("ByteSize=%d Parity=%d StopBits=%d\r\n", _byteSize, _parity, _stopBits);
               s[0] = databits_s[max(min(_byteSize - 5, 3), 0)];
               s[1] = parity_s[max(min(_parity, 4), 0)];
               s[2] = stopbit_s[max(min(_stopBits, 2), 0)];
@@ -283,7 +283,7 @@ void LSRMSTINS_portconfig_check(uint8_t *pBuf, int len) {
                 mylen = 0;
                 uart1dma.flush();
                 uart1dma.begin(prevbaud, config);
-                Serial.printf("Update UART to %ubps *%s\n", uart1dma.getActualBaud(), tmp);
+                Serial.printf("Update UART to %ubps *%s\r\n", uart1dma.getActualBaud(), tmp);
                 current_serconfig = s;
                 prevconf = config;
               }
@@ -396,14 +396,14 @@ void loop() {
       case 'i':
         us_rx_flush();
         Net.print_stat();
-        if (clientip != IPAddress(0, 0, 0, 0)) Serial.printf(" Client connection is %s:%d\n", clientip.toString().c_str(), clientport);
-        Serial.printf(" UART protocol is %s\n", serprot_s[netinfo.encprotocol]);
-        Serial.printf(" UART is %lubps %s\n", (netinfo.mode == 0) ? cdc_baud : current_baud, (netinfo.mode == 0) ? cdc_config.c_str() : current_serconfig.c_str());
-        Serial.printf(" actual UART is %lubps %s\n", uart1dma.getActualBaud(), (netinfo.mode == 0) ? cdc_config.c_str() : current_serconfig.c_str());
+        if (clientip != IPAddress(0, 0, 0, 0)) Serial.printf(" Client connection is %s:%d\r\n", clientip.toString().c_str(), clientport);
+        Serial.printf(" UART protocol is %s\r\n", serprot_s[netinfo.encprotocol]);
+        Serial.printf(" UART is %lubps %s\r\n", (netinfo.mode == 0) ? cdc_baud : current_baud, (netinfo.mode == 0) ? cdc_config.c_str() : current_serconfig.c_str());
+        Serial.printf(" actual UART is %lubps %s\r\n", uart1dma.getActualBaud(), (netinfo.mode == 0) ? cdc_config.c_str() : current_serconfig.c_str());
         break;
       // Format
       case 'f':
-        Serial.println("Format");
+        Serial.print("Format\r\n");
         if (are_you_sure()) {
           nvm.Write(
             [] {
@@ -415,7 +415,7 @@ void loop() {
 
       // Configure network and uart settings from the terminal
       case 's':
-        Serial.printf("Configure system settings\n");
+        Serial.printf("Configure system settings\r\n");
         memset(bu, 0, sizeof(bu));
         memset(b, 0, sizeof(b));
         memset(bc, 0, sizeof(bc));
@@ -458,21 +458,21 @@ void loop() {
             us_gets(bc, 3);
             conv_str2serconfig(bc, bc);
 
-            Serial.println("Input values");
-            Serial.printf(" hostname:%s\n", bu[0]);
-            Serial.printf(" mode:%d\n", mode);
-            Serial.printf(" ssid:%s\n", bu[1]);
-            Serial.printf(" psk :%s\n", pass(bu[2]).c_str());//bu[2]);
+            Serial.print("Input values\r\n");
+            Serial.printf(" hostname:%s\r\n", bu[0]);
+            Serial.printf(" mode:%d\r\n", mode);
+            Serial.printf(" ssid:%s\r\n", bu[1]);
+            Serial.printf(" psk :%s\r\n", pass(bu[2]).c_str());//bu[2]);
             if (strlen(bu[3]) == 0) strcpy(bu[3], "0.0.0.0");
             ip.fromString(bu[3]);
-            Serial.printf(" ip  :%s\n", ip.toString().c_str());
+            Serial.printf(" ip  :%s\r\n", ip.toString().c_str());
             if (strlen(bu[4]) == 0) strcpy(bu[4], "0.0.0.0");
             ip.fromString(bu[4]);
-            Serial.printf(" mask:%s\n", ip.toString().c_str());
-            Serial.printf(" port:%d\n", port);
-            Serial.printf(" serial protocol:%d\n", protocol);
-            Serial.printf(" serial baudrate:%lu\n", baudrate);
-            Serial.printf(" serial config:%s\n", bc);
+            Serial.printf(" mask:%s\r\n", ip.toString().c_str());
+            Serial.printf(" port:%d\r\n", port);
+            Serial.printf(" serial protocol:%d\r\n", protocol);
+            Serial.printf(" serial baudrate:%lu\r\n", baudrate);
+            Serial.printf(" serial config:%s\r\n", bc);
             if (are_you_sure()) {
               netinfo.mode = mode;
               strncpy(netinfo.hostname, bu[0], sizeof(netinfo.hostname) - 1);
@@ -497,16 +497,16 @@ void loop() {
               while (1)
                 ;
             } else
-              Serial.printf("canceled\n");
+              Serial.printf("canceled\r\n");
           } else
-            Serial.printf("canceled\n");
+            Serial.printf("canceled\r\n");
         } else
-          Serial.printf("canceled\n");
+          Serial.printf("canceled\r\n");
         break;
       // Contents of the configuration file
       case 'g':
         us_rx_flush();
-        Serial.println("System settings");
+        Serial.print("System settings\r\n");
         nvm.Read(
           [] {
             EEPROM.get(0, netinfo);
@@ -515,22 +515,22 @@ void loop() {
             EEPROM.put(0, default_netinfo);
             EEPROM.get(0, netinfo);
           });
-        Serial.printf(" hostname:%s\n", netinfo.hostname);
-        Serial.printf(" mode:%d\n", netinfo.mode);
-        Serial.printf(" ssid:%s\n", netinfo.ssid);
-        Serial.printf(" psk :%s\n", pass(netinfo.psk).c_str());
-        Serial.printf(" ip  :%s\n", netinfo.ip.toString().c_str());
-        Serial.printf(" mask:%s\n", netinfo.mask.toString().c_str());
-        Serial.printf(" port:%d\n", netinfo.port);
-        Serial.printf(" protocol:  %d\n", netinfo.encprotocol);
-        Serial.printf(" baudrate:  %lu\n", netinfo.baudrate);
-        Serial.printf(" serconfig: %s\n", netinfo.serconfig);
+        Serial.printf(" hostname:%s\r\n", netinfo.hostname);
+        Serial.printf(" mode:%d\r\n", netinfo.mode);
+        Serial.printf(" ssid:%s\r\n", netinfo.ssid);
+        Serial.printf(" psk :%s\r\n", pass(netinfo.psk).c_str());
+        Serial.printf(" ip  :%s\r\n", netinfo.ip.toString().c_str());
+        Serial.printf(" mask:%s\r\n", netinfo.mask.toString().c_str());
+        Serial.printf(" port:%d\r\n", netinfo.port);
+        Serial.printf(" protocol:  %d\r\n", netinfo.encprotocol);
+        Serial.printf(" baudrate:  %lu\r\n", netinfo.baudrate);
+        Serial.printf(" serconfig: %s\r\n", netinfo.serconfig);
         break;
       default:
-        Serial.println(
-          "Command list\n"
-          " !:bootloader #:reboot i:system status\n"
-          " l:file list f:format s:system setting g:print settings");
+        Serial.print(
+          "Command list\r\n"
+          " !:bootloader #:reboot i:system status\r\n"
+          " l:file list f:format s:system setting g:print settings\r\n");
         break;
     }
   }
@@ -555,7 +555,7 @@ void loop1() {
     if (bootsel_delay.update(BOOTSEL)) {
       if (!prevbootsel) {
         u2s_config = !u2s_config;
-        Serial.printf("%s\n", u2s_config ? "Enter config mode" : "Exit config mode");
+        Serial.printf("%s\r\n", u2s_config ? "Enter config mode" : "Exit config mode");
         prevbootsel = true;
         led.set_pattern(u2s_config ? 4 : -1);
       }
@@ -608,7 +608,7 @@ void loop1() {
     Net.server->setNoDelay(true);
   
     if (client) {
-      Serial.println("Client connected");
+      Serial.print("Client connected\r\n");
       led.set_pattern(-1);
       client.setNoDelay(true);
       clientip = client.remoteIP();
@@ -663,7 +663,7 @@ void loop1() {
       clientport = 0;
       // Client disconnected
       client.stop();
-      Serial.println("Client disconnected");
+      Serial.print("Client disconnected\r\n");
     }
   }
 }
