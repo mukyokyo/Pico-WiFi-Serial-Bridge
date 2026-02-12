@@ -23,12 +23,12 @@ static String pass(const char *s) {
 
 void CNet::print_stat(void) {
   const char *mode_s[] = { "Off", "AP", "STA" };
-  Serial.printf("Net info:\n Hostname is %s\n", NetInfo.hostname); 
-  Serial.printf(" Mode is %s\n", mode_s[NetInfo.mode]);
-  Serial.printf(" My AP is '%s' with '%s'\n", NetInfo.ssid, pass(NetInfo.psk).c_str());
-  Serial.printf(" My IP is %s/%s\n", WiFi.softAPIP().toString().c_str(), WiFi.subnetMask().toString().c_str());
-  Serial.printf(" RSSI is %ddBm\n", WiFi.RSSI());
-  Serial.printf(" TCP server started at %s:%d\n", WiFi.localIP().toString().c_str(), NetInfo.port);
+  Serial.printf("Net info:\r\n Hostname is %s\r\n", NetInfo.hostname); 
+  Serial.printf(" Mode is %s\r\n", mode_s[NetInfo.mode]);
+  Serial.printf(" My AP is '%s' with '%s'\r\n", NetInfo.ssid, pass(NetInfo.psk).c_str());
+  Serial.printf(" My IP is %s/%s\r\n", WiFi.softAPIP().toString().c_str(), WiFi.subnetMask().toString().c_str());
+  Serial.printf(" RSSI is %ddBm\r\n", WiFi.RSSI());
+  Serial.printf(" TCP server started at %s:%d\r\n", WiFi.localIP().toString().c_str(), NetInfo.port);
 }
 
 bool CNet::SetWiFiMode(void) {
@@ -38,14 +38,14 @@ bool CNet::SetWiFiMode(void) {
 
   switch (NetInfo.mode) {
     case 1:
-//      Serial.printf("Waiting for connection [%s]...\n", NetInfo.ssid);
+//      Serial.printf("Waiting for connection [%s]...\r\n", NetInfo.ssid);
       WiFi.mode(WIFI_AP);
       WiFi.setHostname(NetInfo.hostname);
       WiFi.softAPConfig(NetInfo.ip, NetInfo.ip, NetInfo.mask);
       WiFi.softAP(NetInfo.ssid, NetInfo.psk, 1, 0, 1);
       break;
     case 2:
-//      Serial.printf("Trying to connect to [%s]...\n", NetInfo.ssid);
+//      Serial.printf("Trying to connect to [%s]...\r\n", NetInfo.ssid);
       WiFi.mode(WIFI_STA);
       WiFi.setHostname(NetInfo.hostname);
       if (NetInfo.ip != IPAddress(0, 0, 0, 0)) WiFi.config(NetInfo.ip, NetInfo.ip, NetInfo.mask);
@@ -82,7 +82,7 @@ uint8_t CNet::poll(CLED *led, net_hp_callback *func, void *any) {
           led->set_pattern(0);
           server->begin();
           server->setNoDelay(true);
-//          Serial.printf("Connected to '%s' %ddBm\nTCP server started at %s:%d\n", WiFi.SSID().c_str(), WiFi.RSSI(), WiFi.localIP().toString().c_str(), NetInfo.port);
+//          Serial.printf("Connected to '%s' %ddBm\r\nTCP server started at %s:%d\r\n", WiFi.SSID().c_str(), WiFi.RSSI(), WiFi.localIP().toString().c_str(), NetInfo.port);
           MDNS.begin(NetInfo.hostname);
           pollstat = 1;
         } else {
@@ -90,7 +90,7 @@ uint8_t CNet::poll(CLED *led, net_hp_callback *func, void *any) {
             led->set_pattern(0);
             server->begin();
             server->setNoDelay(true);
-//            Serial.printf("Connected to '%s' %ddBm\nTCP server started at %s:%d\n", WiFi.SSID().c_str(), WiFi.RSSI(), WiFi.localIP().toString().c_str(), NetInfo.port);
+//            Serial.printf("Connected to '%s' %ddBm\r\nTCP server started at %s:%d\r\n", WiFi.SSID().c_str(), WiFi.RSSI(), WiFi.localIP().toString().c_str(), NetInfo.port);
             MDNS.begin(NetInfo.hostname);
             pollstat = 1;
           } else {
